@@ -112,22 +112,22 @@ module.exports = function (app) {
     //(Text response will be 'incorrect password' or 'success')
     // ... cheeck for error password  implimented
     // complete but does not differentiate incorrect password or non - existing msg
-    console.log(req.body)
+    //console.log(req.body)
     var boardCollection=req.params.board
     var thread_id = req.body.thread_id
     var delete_password = req.body.delete_password
     var msgThread = mongoose.model("msg", msgSchema, boardCollection)
     
-    console.log("deleting " +thread_id + " with " + delete_password)
+    //console.log("deleting " +thread_id + " with " + delete_password)
     msgThread.findOneAndRemove({"_id":thread_id,"delete_password":delete_password},(err,thread)=>{
       if(err){
-        console.log("XXXX")
+        //console.log("XXXX")
         res.send(err)}
       if (thread == null){
-        console.log("none found") 
+        //console.log("none found") 
         res.send("incorrect password")}
       else {
-        console.log("delete success")
+        //console.log("delete success")
         res.send("success")} 
     })
     
@@ -140,14 +140,14 @@ module.exports = function (app) {
     //IIcan GET an entire thread with all it's replies 
     //from /api/replies/{board}?thread_id={thread_id}. Also hiding the same fields.
     // get all replies of thread
-    console.log(" get replies")
-    console.log("for thread id= " + req.query.thread_id)
+    //console.log(" get replies")
+    //console.log("for thread id= " + req.query.thread_id)
     var boardCollection = req.params.board
     var thread_id = req.query.thread_id
     var msgThread = mongoose.model("msg", msgSchema, boardCollection)
     // {sort: {date: -1}}  {limit:10}
     //const options = { sort: { id: 1 }, limit: 2, skip: 10 }
-    console.log(thread_id)
+    //console.log(thread_id)
     msgThread.findById(thread_id,{
         reported: 0,
         delete_password: 0,
@@ -155,7 +155,7 @@ module.exports = function (app) {
         "replies.reported": 0
       },(err,thread)=>{
     if(err){res.send(err)}
-      console.log("=================================================>")
+      //console.log("=================================================>")
        
       var returnObj = thread
       //The reported and delete_passwords fields will not be sent
@@ -164,7 +164,7 @@ module.exports = function (app) {
       //returnObj.delete_password = undefined
       //returnObj.reported = undefined
       // should return an array
-      console.log(returnObj)
+      //console.log(returnObj)
     res.json(returnObj)
     })
   })
@@ -179,7 +179,7 @@ module.exports = function (app) {
     //and it will also update the bumped_on date to the comments date. ----------------------------->
     //(Recomend res.redirect to thread page /b/{board}/{thread_id}) 
     //In the thread's 'replies' array will be saved _id, text, created_on, delete_password, & reported.
-    console.log("post /api/replies/:board")
+    //console.log("post /api/replies/:board")
     var boardCollection = req.params.board
     var thread_id = req.body.thread_id
     //setup  thread infor to be passed into array
@@ -193,7 +193,7 @@ module.exports = function (app) {
     //console.log("-----------------------------------------------------------------")
     //console.log(replyInfo)
     var msgThread = mongoose.model("msg", msgSchema, boardCollection)
-    console.log("posting")
+    //console.log("posting")
     // .. tbd
 //    msgThread.findByIdAndUpdate(thread_id, {$addToSet:{replies:replyInfo}},(err,doc)=>{
     msgThread.findByIdAndUpdate(thread_id, {bumped_on:new Date() , $addToSet:{replies:replyInfo}},(err,doc)=>{
@@ -221,11 +221,11 @@ module.exports = function (app) {
     if(err){res.send(err)}
       //var returnObj = thread
       //step (2) change status in array
-      console.log ('before updating replies array')
-      console.log (thread)
+      //console.log ('before updating replies array')
+      //console.log (thread)
       
       thread.replies = thread.replies.map((reply)=> reply.reply_id == reply_id? reply.reported = true :null)
-      console.log(thread)
+      //console.log(thread)
       // step (3) update
       
 thread.findByIdAndUpdate(thread.thread_Id, {replies:thread.replies},(err,result)=>{
@@ -247,7 +247,7 @@ if(err){res.send(err)}
     //if I send a DELETE request to /api/replies/{board} 
     //and pass along the thread_id, reply_id, & delete_password. 
     //(Text response will be 'incorrect password' or 'success')
-    console.log("deleting " + req.body.reply_id+ " of " + req.body.thread_id )
+    //console.log("deleting " + req.body.reply_id+ " of " + req.body.thread_id )
     //console.log(req.body)
     var boardCollection = req.params.board
      var msgThread = mongoose.model("msg", msgSchema, boardCollection)
@@ -265,9 +265,9 @@ if(err){res.send(err)}
        //console.log(aReply)
        
      //update reply Arr
-       console.log(thread.replies)
+       //console.log(thread.replies)
        thread.replies = thread.replies.filter(reply=>reply._id != req.body.reply_id || reply.delete_password != req.body.delete_password)
-       console.log(thread.replies)
+       //console.log(thread.replies)
        //savee here
        /*
        thread.findByIdAndUpdate(thread._id,{replies:thread.replies},{new:true},(err,doc)=>{
